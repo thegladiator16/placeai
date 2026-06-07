@@ -1,0 +1,14 @@
+{
+  "extends": "@placeai/config/tsconfig/nextjs",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@placeai/db": ["../../packages/db/src/index.ts"],
+      "@placeai/db/*": ["../../packages/db/src/*"],
+      "@placeai/types": ["../../packages/types/src/index.ts"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,34 @@
+{
+  "name": "@placeai/db",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema/index.ts",
+    "./client": "./src/client.ts"
+  },
+  "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "tsx src/seed.ts",
+    "db:seed-alumni": "tsx src/seed-alumni.ts",
+    "db:seed-jobs": "tsx src/seed-jobs.ts",
+    "db:verify": "tsx src/verify.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.33.0",
+    "postgres": "^3.4.4"
+  },
+  "devDependencies": {
+    "@placeai/config": "workspace:*",
+    "@types/node": "^20.14.0",
+    "drizzle-kit": "^0.24.0",
+    "dotenv": "^16.4.5",
+    "tsx": "^4.16.0",
+    "typescript": "^5.5.0"
+  }
+}
