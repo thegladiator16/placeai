@@ -1,24 +1,9 @@
 {
   "version": 2,
-  "buildCommand": "cd ../.. && pnpm turbo build --filter=web",
+  "buildCommand": "cd apps/web && pnpm build",
   "installCommand": "pnpm install --frozen-lockfile",
   "framework": "nextjs",
   "outputDirectory": "apps/web/.next",
-  "regions": ["bom1"],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "functions": {
-    "apps/web/app/api/**": {
-      "maxDuration": 30
-    },
-    "apps/web/app/api/v1/cover-letter/**": {
-      "maxDuration": 60
-    },
-    "apps/web/app/api/v1/ats/**": {
-      "maxDuration": 60
-    }
-  },
   "headers": [
     {
       "source": "/api/(.*)",
