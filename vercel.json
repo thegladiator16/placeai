@@ -1,16 +1,4 @@
 {
   "version": 2,
-  "buildCommand": "cd apps/web && pnpm build",
-  "installCommand": "pnpm install --frozen-lockfile",
-  "framework": "nextjs",
-  "outputDirectory": "apps/web/.next",
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" }
-      ]
-    }
-  ]
+  "installCommand": "pnpm install --frozen-lockfile"
 }
