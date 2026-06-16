@@ -67,29 +67,39 @@ Return a JSON object with exactly these three keys:
 
 Make messages sound natural and not templated. Reference specific details. Be respectful of their time.`;
 
-  const response = await anthropic.messages.create({
-    model: 'claude-haiku-4-5',
-    max_tokens: 1024,
-    messages: [{ role: 'user', content: prompt }],
-  });
-
-  const text = response.content[0]?.type === 'text' ? response.content[0].text : '';
-
-  let messages: GeneratedMessages;
   try {
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    messages = jsonMatch ? JSON.parse(jsonMatch[0]) as GeneratedMessages : {
-      connectionRequest: `Hi ${d.contactName.split(' ')[0]}, ${d.sameCollege ? `fellow ${senderCollege} alum here!` : 'I came across your profile.'} I'm exploring opportunities at ${d.contactCompany} and would love to connect.`,
-      followUp: `Thanks for connecting! I'm actively looking at ${d.contactCompany} for ${d.targetJobTitle ?? 'engineering roles'}. Would you be open to a quick 15-min chat? Your experience there would be super valuable.`,
-      emailVersion: `Subject: ${senderCollege} Alum — Interested in ${d.contactCompany}\n\nHi ${d.contactName.split(' ')[0]},\n\nI hope this email finds you well. I'm ${senderName}${senderCollege ? `, a ${senderCollege} graduate` : ''}. I came across your profile and noticed your work at ${d.contactCompany}.\n\nI'm currently exploring ${d.targetJobTitle ?? 'software engineering'} opportunities and would love to learn about your experience there.\n\nWould you be open to a 15-minute call? I'd really appreciate any insights.\n\nBest regards,\n${senderName}`,
-    };
-  } catch {
-    messages = {
-      connectionRequest: text.slice(0, 300),
-      followUp: text.slice(0, 500),
-      emailVersion: text,
-    };
-  }
+    const response = await anthropic.messages.create({
+      model: 'claude-haiku-4-5',
+      max_tokens: 1024,
+      messages: [{ role: 'user', content: prompt }],
+    });
 
-  return NextResponse.json({ success: true, data: messages } satisfies ApiResponse<GeneratedMessages>);
+    const text = response.content[0]?.type === 'text' ? response.content[0].text : '';
+
+    let messages: GeneratedMessages;
+    try {
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      messages = jsonMatch ? JSON.parse(jsonMatch[0]) as GeneratedMessages : {
+        connectionRequest: `Hi ${d.contactName.split(' ')[0]}, ${d.sameCollege ? `fellow ${senderCollege} alum here!` : 'I came across your profile.'} I'm exploring opportunities at ${d.contactCompany} and would love to connect.`,
+        followUp: `Thanks for connecting! I'm actively looking at ${d.contactCompany} for ${d.targetJobTitle ?? 'engineering roles'}. Would you be open to a quick 15-min chat? Your experience there would be super valuable.`,
+        emailVersion: `Subject: ${senderCollege} Alum — Interested in ${d.contactCompany}\n\nHi ${d.contactName.split(' ')[0]},\n\nI hope this email finds you well. I'm ${senderName}${senderCollege ? `, a ${senderCollege} graduate` : ''}. I came across your profile and noticed your work at ${d.contactCompany}.\n\nI'm currently exploring ${d.targetJobTitle ?? 'software engineering'} opportunities and would love to learn about your experience there.\n\nWould you be open to a 15-minute call? I'd really appreciate any insights.\n\nBest regards,\n${senderName}`,
+      };
+    } catch {
+      messages = {
+        connectionRequest: text.slice(0, 300),
+        followUp: text.slice(0, 500),
+        emailVersion: text,
+      };
+    }
+
+    return NextResponse.json({ success: true, data: messages } satisfies ApiResponse<GeneratedMessages>);
+  } catch (err) {
+    return NextResponse.json({
+      success: false,
+      error: {
+        code: 'AI_SERVICE_ERROR',
+        message: err instanceof Error ? err.message : 'AI service unavailable',
+      },
+    }, { status: 502 });
+  }
 }

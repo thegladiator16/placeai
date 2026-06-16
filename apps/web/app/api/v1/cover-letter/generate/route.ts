@@ -63,11 +63,22 @@ Guidelines:
 
 Write the cover letter now:`;
 
-  const stream = anthropic.messages.stream({
-    model: 'claude-haiku-4-5',
-    max_tokens: 800,
-    messages: [{ role: 'user', content: prompt }],
-  });
+  let stream;
+  try {
+    stream = anthropic.messages.stream({
+      model: 'claude-haiku-4-5',
+      max_tokens: 800,
+      messages: [{ role: 'user', content: prompt }],
+    });
+  } catch (err) {
+    return NextResponse.json({
+      success: false,
+      error: {
+        code: 'AI_SERVICE_ERROR',
+        message: err instanceof Error ? err.message : 'AI service unavailable',
+      },
+    }, { status: 502 });
+  }
 
   const encoder = new TextEncoder();
   const readable = new ReadableStream({

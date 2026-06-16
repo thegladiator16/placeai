@@ -28,6 +28,12 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
   const authObj = await auth();
 
   if (!isPublicRoute(req) && !authObj.userId) {
+    if (req.nextUrl.pathname.startsWith('/api/')) {
+      return NextResponse.json(
+        { success: false, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } },
+        { status: 401 },
+      );
+    }
     const signInUrl = new URL('/sign-in', req.url);
     signInUrl.searchParams.set('redirect_url', req.url);
     return NextResponse.redirect(signInUrl);

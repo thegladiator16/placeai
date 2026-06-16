@@ -26,6 +26,7 @@ async function checkDatabase(): Promise<ServiceStatus> {
 }
 
 async function checkAIService(): Promise<ServiceStatus> {
+  if (process.env.ANTHROPIC_API_KEY) return 'ok';
   const aiServiceUrl = process.env.AI_SERVICE_URL;
   if (!aiServiceUrl) return 'error';
   try {

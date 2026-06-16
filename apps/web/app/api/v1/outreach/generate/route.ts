@@ -55,20 +55,30 @@ Return a JSON object with exactly these keys:
 
 Make them sound human, not templated. Reference ${companyName} specifically.`;
 
-  const response = await anthropic.messages.create({
-    model: 'claude-haiku-4-5',
-    max_tokens: 1024,
-    messages: [{ role: 'user', content: prompt }],
-  });
-
-  const text = response.content[0]?.type === 'text' ? response.content[0].text : '';
-  let sequence: OutreachSequence;
   try {
-    const match = text.match(/\{[\s\S]*\}/);
-    sequence = match ? JSON.parse(match[0]) as OutreachSequence : { step1: text.slice(0, 300), step2: text.slice(300, 500), step3: text.slice(500, 700) };
-  } catch {
-    sequence = { step1: text.slice(0, 300), step2: 'Following up on my previous message — still very interested in the role!', step3: 'Happy to connect when the timing is right. Thanks!' };
-  }
+    const response = await anthropic.messages.create({
+      model: 'claude-haiku-4-5',
+      max_tokens: 1024,
+      messages: [{ role: 'user', content: prompt }],
+    });
 
-  return NextResponse.json({ success: true, data: sequence } satisfies ApiResponse<OutreachSequence>);
+    const text = response.content[0]?.type === 'text' ? response.content[0].text : '';
+    let sequence: OutreachSequence;
+    try {
+      const match = text.match(/\{[\s\S]*\}/);
+      sequence = match ? JSON.parse(match[0]) as OutreachSequence : { step1: text.slice(0, 300), step2: text.slice(300, 500), step3: text.slice(500, 700) };
+    } catch {
+      sequence = { step1: text.slice(0, 300), step2: 'Following up on my previous message — still very interested in the role!', step3: 'Happy to connect when the timing is right. Thanks!' };
+    }
+
+    return NextResponse.json({ success: true, data: sequence } satisfies ApiResponse<OutreachSequence>);
+  } catch (err) {
+    return NextResponse.json({
+      success: false,
+      error: {
+        code: 'AI_SERVICE_ERROR',
+        message: err instanceof Error ? err.message : 'AI service unavailable',
+      },
+    }, { status: 502 });
+  }
 }

@@ -47,3 +47,14 @@ pnpm-debug.log*
 .vercel
 
 .vercel
+
+# Local test scripts and configs
+.claude/
+packages/db/auth-bootstrap.mjs
+packages/db/create-db.mjs
+packages/db/get-test-data.mjs
+packages/db/inspect-db.mjs
+packages/db/link-resume.mjs
+packages/db/test-pages.mjs
+packages/db/verify-content.mjs
+scripts/inspect-db.mjs
