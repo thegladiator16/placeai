@@ -83,12 +83,18 @@ Write the cover letter now:`;
   const encoder = new TextEncoder();
   const readable = new ReadableStream({
     async start(controller) {
-      for await (const chunk of stream) {
-        if (chunk.type === 'content_block_delta' && chunk.delta.type === 'text_delta') {
-          controller.enqueue(encoder.encode(chunk.delta.text));
+      try {
+        for await (const chunk of stream) {
+          if (chunk.type === 'content_block_delta' && chunk.delta.type === 'text_delta') {
+            controller.enqueue(encoder.encode(chunk.delta.text));
+          }
         }
+        controller.close();
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'AI stream failed';
+        controller.enqueue(encoder.encode(`\n\n[ERROR] ${msg}`));
+        controller.close();
       }
-      controller.close();
     },
   });
 

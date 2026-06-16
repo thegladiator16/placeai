@@ -58,3 +58,6 @@ packages/db/link-resume.mjs
 packages/db/test-pages.mjs
 packages/db/verify-content.mjs
 scripts/inspect-db.mjs
+packages/db/audit-db.mjs
+packages/db/test-ats.mjs
+packages/db/response.html

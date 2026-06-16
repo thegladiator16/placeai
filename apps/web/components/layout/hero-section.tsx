@@ -62,14 +62,14 @@ export function HeroSection() {
           <div className="flex flex-wrap gap-3 mt-8">
             <Link
               href="/sign-up"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand text-white font-medium hover:bg-brand-dark transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-brand text-white font-medium hover:bg-brand-dark transition-colors"
             >
               Analyze My Resume Free
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/tools/ats-checker"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-border text-foreground font-medium hover:border-brand/50 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border text-foreground font-medium hover:border-brand/50 transition-colors"
             >
               Try ATS Checker
             </Link>

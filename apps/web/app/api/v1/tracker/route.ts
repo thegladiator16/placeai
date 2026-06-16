@@ -18,6 +18,7 @@ const createSchema = z.object({
   priority: z.enum(['low', 'medium', 'high']).default('medium'),
   notes: z.string().max(5000).optional(),
   salaryExpectation: z.number().int().positive().optional(),
+  jobId: z.string().uuid().optional(),
 });
 
 export async function GET(_req: NextRequest) {
@@ -65,6 +66,7 @@ export async function POST(req: NextRequest) {
     jobUrl: parsed.data.jobUrl ?? null,
     notes: parsed.data.notes ?? null,
     salaryExpectation: parsed.data.salaryExpectation ?? null,
+    jobId: parsed.data.jobId ?? null,
     appliedAt: parsed.data.status === 'applied' ? new Date() : null,
   }).returning();
 

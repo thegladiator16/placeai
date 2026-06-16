@@ -21,14 +21,14 @@ export function CTASection() {
           <div className="flex flex-wrap gap-3 justify-center mt-8">
             <Link
               href="/sign-up"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-brand text-white font-medium hover:bg-brand-dark transition-colors"
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg bg-brand text-white font-medium hover:bg-brand-dark transition-colors"
             >
               Get Started Free
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/pricing"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl border border-border text-foreground font-medium hover:border-brand/50 transition-colors"
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg border border-border text-foreground font-medium hover:border-brand/50 transition-colors"
             >
               View Pricing
             </Link>

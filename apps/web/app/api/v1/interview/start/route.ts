@@ -44,24 +44,32 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: { code: 'VALIDATION_ERROR', message: parsed.error.message } } satisfies ApiResponse<never>, { status: 400 });
   }
 
-  const aiRes = await fetch(`${AI_SERVICE_URL}/generate/interview-questions`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Service-Secret': AI_SERVICE_SECRET },
-    body: JSON.stringify({
-      session_type: parsed.data.sessionType,
-      company_name: parsed.data.companyName,
-      role_name: parsed.data.roleName,
-      difficulty: parsed.data.difficulty,
-      question_count: parsed.data.questionCount,
-      user_tier: user.subscriptionTier,
-    }),
-  });
+  let generated: { questions: InterviewSession['questions']; tokens_used?: number };
+  try {
+    const aiRes = await fetch(`${AI_SERVICE_URL}/generate/interview-questions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Service-Secret': AI_SERVICE_SECRET },
+      body: JSON.stringify({
+        session_type: parsed.data.sessionType,
+        company_name: parsed.data.companyName,
+        role_name: parsed.data.roleName,
+        difficulty: parsed.data.difficulty,
+        question_count: parsed.data.questionCount,
+        user_tier: user.subscriptionTier,
+      }),
+    });
 
-  if (!aiRes.ok) {
-    return NextResponse.json({ success: false, error: { code: 'AI_SERVICE_ERROR', message: 'Interview service unavailable' } } satisfies ApiResponse<never>, { status: 502 });
+    if (!aiRes.ok) {
+      return NextResponse.json({ success: false, error: { code: 'AI_SERVICE_ERROR', message: 'Interview service unavailable' } } satisfies ApiResponse<never>, { status: 502 });
+    }
+
+    generated = await aiRes.json() as { questions: InterviewSession['questions']; tokens_used?: number };
+  } catch (err) {
+    return NextResponse.json({
+      success: false,
+      error: { code: 'AI_SERVICE_ERROR', message: err instanceof Error ? err.message : 'Interview generation service unreachable' },
+    }, { status: 502 });
   }
-
-  const generated = await aiRes.json() as { questions: InterviewSession['questions']; tokens_used?: number };
 
   const [session] = await Promise.all([
     db.insert(interviewSessions).values({

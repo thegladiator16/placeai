@@ -6,14 +6,9 @@ const FOOTER_LINKS = {
     { href: '/features', label: 'Features' },
     { href: '/pricing', label: 'Pricing' },
     { href: '/tools/ats-checker', label: 'ATS Checker' },
-    { href: '/tools/resume-score', label: 'Resume Score' },
-    { href: '/tools/salary-calculator', label: 'Salary Calculator' },
   ],
   Resources: [
     { href: '/blog', label: 'Blog' },
-    { href: '/interview-questions/backend-engineer-fresher', label: 'Interview Questions' },
-    { href: '/colleges/iit-bombay', label: 'College Guides' },
-    { href: '/companies/zepto', label: 'Company Guides' },
   ],
   Company: [
     { href: '/about', label: 'About' },

@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   XCircle,
   ArrowRight,
+  Loader2,
 } from 'lucide-react';
 
 const STOP_WORDS = new Set([
@@ -29,6 +30,7 @@ function tokenize(text: string): Set<string> {
   const tokens = text
     .toLowerCase()
     .split(/[^a-z0-9+#.\-]+/)
+    .map((w) => w.replace(/^[.\-]+|[.\-]+$/g, ''))
     .filter((w) => w.length >= 2 && !STOP_WORDS.has(w) && !/^\d+$/.test(w));
   return new Set(tokens);
 }
@@ -59,7 +61,7 @@ function computeScore(resume: string, jd: string): Result {
 function verdict(score: number): { label: string; color: string; icon: typeof CheckCircle2 } {
   if (score >= 75) return { label: 'Excellent match', color: 'text-accent', icon: CheckCircle2 };
   if (score >= 50) return { label: 'Good match — room to improve', color: 'text-yellow-500', icon: Sparkles };
-  return { label: 'Needs work', color: 'text-pink-400', icon: XCircle };
+  return { label: 'Needs work', color: 'text-destructive', icon: XCircle };
 }
 
 export default function AtsCheckerPage() {
@@ -67,6 +69,7 @@ export default function AtsCheckerPage() {
   const [jd, setJd] = useState('');
   const [result, setResult] = useState<Result | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isComputing, setIsComputing] = useState(false);
 
   function handleCheck() {
     if (!resume.trim() || !jd.trim()) {
@@ -75,12 +78,16 @@ export default function AtsCheckerPage() {
       return;
     }
     setError(null);
-    setResult(computeScore(resume, jd));
-    if (typeof window !== 'undefined') {
-      setTimeout(() => {
-        document.getElementById('ats-result')?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    }
+    setIsComputing(true);
+    setTimeout(() => {
+      setResult(computeScore(resume, jd));
+      setIsComputing(false);
+      if (typeof window !== 'undefined') {
+        setTimeout(() => {
+          document.getElementById('ats-result')?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    }, 0);
   }
 
   const circumference = 2 * Math.PI * 54;
@@ -147,9 +154,14 @@ export default function AtsCheckerPage() {
           <button
             type="button"
             onClick={handleCheck}
-            className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-8 py-4 text-base font-medium text-white hover:bg-brand-dark transition"
+            disabled={isComputing}
+            className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-8 py-4 text-base font-medium text-white hover:bg-brand-dark transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            <Sparkles className="h-5 w-5" />
+            {isComputing ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <Sparkles className="h-5 w-5" />
+            )}
             Check ATS Score
           </button>
         </div>
@@ -175,7 +187,7 @@ export default function AtsCheckerPage() {
                       cy="60"
                       r="54"
                       fill="none"
-                      stroke="#6C47FF"
+                      stroke="hsl(var(--primary))"
                       strokeWidth="10"
                       strokeLinecap="round"
                       strokeDasharray={circumference}
@@ -228,7 +240,7 @@ export default function AtsCheckerPage() {
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-foreground mb-3 inline-flex items-center gap-2">
-                    <XCircle className="h-4 w-4 text-pink-400" />
+                    <XCircle className="h-4 w-4 text-destructive" />
                     Missing keywords ({result.missing.length})
                   </h3>
                   <div className="flex flex-wrap gap-2">
@@ -238,7 +250,7 @@ export default function AtsCheckerPage() {
                       result.missing.map((kw) => (
                         <span
                           key={kw}
-                          className="inline-flex items-center px-2 py-1 rounded-md bg-pink-400/10 text-pink-400 text-xs"
+                          className="inline-flex items-center px-2 py-1 rounded-md bg-destructive/10 text-destructive text-xs"
                         >
                           {kw}
                         </span>
