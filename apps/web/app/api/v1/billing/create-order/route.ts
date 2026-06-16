@@ -17,10 +17,12 @@ const createOrderSchema = z.object({
   interval: z.enum(['monthly', 'annual']),
 });
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID ?? '',
-  key_secret: process.env.RAZORPAY_KEY_SECRET ?? '',
-});
+function getRazorpay() {
+  return new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID ?? 'rzp_test_placeholder',
+    key_secret: process.env.RAZORPAY_KEY_SECRET ?? 'placeholder',
+  });
+}
 
 export async function POST(req: NextRequest) {
   const { userId: clerkId } = await auth();
@@ -44,7 +46,7 @@ export async function POST(req: NextRequest) {
   const amount = interval === 'annual' ? plan.priceAnnual : plan.priceMonthly;
 
   // Create Razorpay order
-  const order = await razorpay.orders.create({
+  const order = await getRazorpay().orders.create({
     amount,
     currency: 'INR',
     receipt: `order_${user.id.slice(0, 8)}_${Date.now()}`,

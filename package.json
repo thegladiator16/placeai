@@ -20,6 +20,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore"
   },
   "devDependencies": {
+    "next": "14.2.6",
     "turbo": "^2.0.0",
     "prettier": "^3.3.0",
     "typescript": "^5.5.0"
