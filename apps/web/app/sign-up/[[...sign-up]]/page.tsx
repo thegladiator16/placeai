@@ -43,7 +43,7 @@ export default function SignUpPage() {
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-white"><Sparkles className="h-4 w-4" /></span>
           PlaceAI
         </Link>
-        <SignUp appearance={{ elements: { rootBox: 'mx-auto', card: 'bg-card border border-border shadow-xl' } }} />
+        <SignUp />
         <p className="md:hidden mt-6 text-xs text-muted-foreground">Already have an account? <Link href="/sign-in" className="text-brand hover:underline">Sign in →</Link></p>
       </div>
     </div>
